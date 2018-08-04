@@ -1,9 +1,7 @@
 # trait-anxiety
 Testing a project on automated analysis of trait anxiety in zebrafish using Python code.
 
-Several experiments on fish have been performed using a certain set-up. The information from the experiments get saved in .xls files. This project involves extracting valuable information from the data collected. All information that is extracted gets saved in one particular .xls file called Extracted_data.xls. 
-
-Set-up of experiment: A fish is placed into a tank of certain dimensions and it’s behaviour is recorded over time under different experiemental set-ups. Data about the coordinates of the fish, number of frames, etc. is obtained from the recording and is saved in raw .xls files. 
+Several experiments on fish have been performed using a certain set-up. The information from the experiments (coordinates of the fish, number of frames, etc.) get saved in .xls files. This project involves extracting valuable information from the data collected and analysing it. 
 
 Prerequisites:
 
