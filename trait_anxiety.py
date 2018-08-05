@@ -10,6 +10,7 @@ import numpy as np
 
 #user-defined inputs
 folder = input(str("Define folder name (within quotations): "))
+# folder = "ILR_DoubleMut"
 X_mm = input("Define the X-length of the tank in mm: ")
 X_length = X_mm
 # X_length = 200
@@ -18,8 +19,16 @@ dist_from_wall = dist
 # dist_from_wall = 20 
 no_of_frames = input("Define the number of frames: ")
 frames = no_of_frames + 10
-# the frame_rate calculation assumes the data is collected over a 600 second (10min) period: can be changed if this changes by making it user-defined
-frame_rate = no_of_frames/600.00
+total_time = input("Define total data collection time in seconds: ")
+frame_rate = no_of_frames/total_time
+
+start_time = input(str("Define data extraction start minute: "))
+start_ = (start_time)*(frame_rate*60) 
+start = start_ + 1
+end_time = input(str("Define data extraction end minute: "))
+end = (end_time)*(frame_rate*60)
+name = str(start_time) + 'to' + str(end_time) + 'minutes'
+val = abs(end-start_) 
 
 path = 'inputs/' + folder + '/'
 
@@ -27,7 +36,7 @@ header_1 = 'File name,Total time, ,Time %, ,Average velocity, ,Total distance, ,
 with open(path + 'output/extracted_info.txt', 'w') as f:
 	f.write(str(header_1))
 
-header_2 = 'File name,% time in bottom 1/2, , , , , , , , , ,% time in bottom 1/4, , , , , , , , , ,% time in bottom 1/3, , , , , , , , , ,\n ,0-1 min,1-2 min,2-3 min,3-4 min,4-5 min,5-6 min,6-7 min,7-8 min,8-9 min,9-10 min,0-1 min,1-2 min,2-3 min,3-4 min,4-5 min,5-6 min,6-7 min,7-8 min,8-9 min,9-10 min,0-1 min,1-2 min,2-3 min,3-4 min,4-5 min,5-6 min,6-7 min,7-8 min,8-9 min,9-10 min, ,\n'
+header_2 = 'File name,% time in bottom 1/2, , , , , , , , , ,% time in bottom 1/4, , , , , , , , , ,% time in bottom 1/3, , , , , , , , , ,\n ,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10, ,\n'
 with open(path + 'output/time_calc.txt', 'w') as f:
 	f.write(str(header_2))
 
@@ -41,7 +50,7 @@ for filename in glob.glob('*.xls'):
 
 	for i in pages:
 		raw_sheet = raw_file + '_Tank_' + str(i) + '.xls'
-		X_min, X_max, Y_min, Y_max, scaler = scale(X_length, raw_sheet, frames)
+		X_min, X_max, Y_min, Y_max, scaler = scale(X_length, raw_sheet, frames, start, end)
 
 # important to not mess up:
 		X0 = X_min + dist_from_wall
@@ -58,11 +67,11 @@ for filename in glob.glob('*.xls'):
 
 		file_name = raw_file + '_Tank_' + str(i)
 		xls_input = raw_sheet + '.txt'
-		heat_map(X0, Xn, Y0, Yn, xls_input, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name)
+		heat_map(X0, Xn, Y0, Yn, xls_input, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name, val, name)
 
-calc('output/Extracted_data.xls')
-calc2('output/Extracted_data.xls')
-plot('output/Extracted_data.xls')
-conf_int_1('output/Extracted_data.xls')
-conf_int_2('output/Extracted_data.xls')
-conf_int_3('output/Extracted_data.xls')
+calc("output/Extracted_data_" + name + ".xls")
+calc2("output/Extracted_data_" + name + ".xls")
+plot("output/Extracted_data_" + name + ".xls", name)
+conf_int_1("output/Extracted_data_" + name + ".xls", name)
+conf_int_2("output/Extracted_data_" + name + ".xls", name)
+conf_int_3("output/Extracted_data_" + name + ".xls", name)

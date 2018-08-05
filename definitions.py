@@ -3,6 +3,7 @@ from xlutils import copy
 import csv
 import xlwt
 import numpy as np
+import itertools
 
 
 def get_all_sheets(excel_file_input, excel_file_output):
@@ -16,7 +17,7 @@ def get_all_sheets(excel_file_input, excel_file_output):
 			new_workbook.save(excel_file_output + '_Tank_' + str(x) + '.xls')
 	return number
 
-def scale(X_length, tank_sheet, frames):
+def scale(X_length, tank_sheet, frames, start, end):
 	workbook = open_workbook(tank_sheet)
 	sheet = workbook.sheet_by_index(0)
 	cell = sheet.cell(6, 2)
@@ -67,6 +68,15 @@ def scale(X_length, tank_sheet, frames):
 	with open(tank_sheet + '.txt', 'w') as out:
 		writer = csv.writer(out, delimiter=',')
 		for row in lines:
+			writer.writerow(row)
+
+	slice = []
+	f = csv.reader(open(tank_sheet + '.txt'))
+	for row in itertools.islice(f, start, end):
+		slice.append(row)
+	with open(tank_sheet + '.txt', 'w') as out:
+		writer = csv.writer(out, delimiter=',')
+		for row in slice:
 			writer.writerow(row)
 
 	return X_min, X_max, Y_min, Y_max, scaler

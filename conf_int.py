@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import xlrd
 
-def conf_int_1(xls):
+def conf_int_1(xls, name):
 	avg, conf_int, emin, emax = [],[],[],[]
 	rb = xlrd.open_workbook(xls)
 	sheet1 = rb.sheet_by_index(1)
@@ -24,13 +24,13 @@ def conf_int_1(xls):
 	plt.ylabel('% time')
 	plt.xlim(0,9)
 	plt.ylim(min(emin)-1,max(emax)+1)
-	plt.xticks(np.arange(10), ('0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10'))
-	plt.xlabel('minute intervals')
+	plt.xticks(np.arange(10))
+	plt.xlabel('step intervals')
 	plt.plot(x, y, color='blue')
 	plt.fill_between(x, emin, emax, color='blue', alpha=0.3)
-   	plt.savefig('output/time_half.png')
+   	plt.savefig('output/time_half_' + name + '.png')
 
-def conf_int_2(xls):
+def conf_int_2(xls, name):
 	avg, conf_int, emin, emax = [],[],[],[]
 	rb = xlrd.open_workbook(xls)
 	sheet1 = rb.sheet_by_index(1)
@@ -51,13 +51,13 @@ def conf_int_2(xls):
 	plt.ylabel('% time')
 	plt.xlim(0,9)
 	plt.ylim(min(emin)-1,max(emax)+1)
-	plt.xticks(np.arange(10), ('0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10'))
-	plt.xlabel('minute intervals')
+	plt.xticks(np.arange(10))
+	plt.xlabel('step intervals')
 	plt.plot(x, y, color='red')
 	plt.fill_between(x, emin, emax, color='red', alpha=0.3)
-   	plt.savefig('output/time_fourth.png')
+   	plt.savefig('output/time_fourth_' + name + '.png')
 
-def conf_int_3(xls):
+def conf_int_3(xls, name):
 	avg, conf_int, emin, emax = [],[],[],[]
 	rb = xlrd.open_workbook(xls)
 	sheet1 = rb.sheet_by_index(1)
@@ -78,8 +78,8 @@ def conf_int_3(xls):
 	plt.ylabel('% time')
 	plt.xlim(0,9)
 	plt.ylim(min(emin)-1,max(emax)+1)
-	plt.xticks(np.arange(10), ('0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10'))
-	plt.xlabel('minute intervals')
+	plt.xticks(np.arange(10))
+	plt.xlabel('step intervals')
 	plt.plot(x, y, color='green')
 	plt.fill_between(x, emin, emax, color='green', alpha=0.3)
-   	plt.savefig('output/time_third.png')
+   	plt.savefig('output/time_third_' + name + '.png')

@@ -11,7 +11,7 @@ from scipy import stats
 import xlrd
 
 
-def plot(xls):
+def plot(xls, name):
 
     # visual representation graph: alignment test
 
@@ -68,7 +68,7 @@ def plot(xls):
 
     plt.axis('off')
 
-    plt.savefig('output/%time_allignment.png') 
+    plt.savefig('output/%time_allignment_' + name + '.png') 
 
     # distance graphs: bar
 
@@ -131,7 +131,7 @@ def plot(xls):
                     ha='center', va='bottom')
 
     autolabel(rects)
-    plt.savefig('output/distance_bar.png')
+    plt.savefig('output/distance_bar_' + name + '.png')
 
     # time graph: stacked bar
 
@@ -211,4 +211,4 @@ def plot(xls):
     ax1.set_ylabel("% Time")
     ax1.set_xlabel("Conditions")
     plt.xlim([min(tick_pos)-(bar_width), max(tick_pos)+bar_width])
-    plt.savefig('output/%time_stacked_bar.png')
+    plt.savefig('output/%time_stacked_bar_'  + name + '.png')

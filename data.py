@@ -109,8 +109,8 @@ def float_if_possible(strg):
     except ValueError:
         return strg
 
-def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name):
-	chunk_value = int(frame_rate*60)
+def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name, val, name):
+	chunk_value = int(val/10)
 	XY, XY_1, XY_2, XY_3, XY_4, XY_5, XY_6, XY_7, XY_8, XY_9, XY_10, XY_1_half, XY_2_half, XY_3_half, XY_4_half, XY_5_half, XY_6_half, XY_7_half, XY_8_half, XY_9_half, XY_10_half, XY_1_fourth, XY_2_fourth, XY_3_fourth, XY_4_fourth, XY_5_fourth, XY_6_fourth, XY_7_fourth, XY_8_fourth, XY_9_fourth, XY_10_fourth, XY_1_third, XY_2_third, XY_3_third, XY_4_third, XY_5_third, XY_6_third, XY_7_third, XY_8_third, XY_9_third, XY_10_third = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
 	with open(input_file, 'r') as f:
 		f.readline()
@@ -415,4 +415,4 @@ def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y
 	for row_index in range(len(data2)):
 		for col_index in range(len(data2[row_index])):
 			sheet2.write(row_index, col_index, float_if_possible(data2[row_index][col_index]))
-	wb.save("output/Extracted_data.xls")
+	wb.save("output/Extracted_data_" + name + ".xls")
