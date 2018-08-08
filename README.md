@@ -23,7 +23,7 @@ Define data extraction start minute: 0
 Define data extraction end minute: 10
 
 # definitions.py
-This script mainly involves segmenting the workbook into 4 worksheets and scaling all the raw data into .txt files. All the information gets saved in the raw folder
+This script mainly involves segmenting the workbook into worksheets and scaling all the raw data into .txt files. All the information gets saved in the raw folder
 
 # data.py
 This is where all the raw data from the .txt files is manipulated and the output information is written in the output folder. This data is the final data that you will see in the Extracted_data.xls workbook.
