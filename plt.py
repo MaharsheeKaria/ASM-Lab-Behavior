@@ -70,7 +70,7 @@ def plot(xls, name):
 
     plt.savefig('output/%time_allignment_' + name + '.png') 
 
-    # distance graphs: bar
+    # distance graphs: scatter with individual points
 
     workbook = open_workbook(xls)
     sheet = workbook.sheet_by_index(0)
@@ -90,6 +90,10 @@ def plot(xls, name):
     dist_mean_b_3fourth = cell.value
     cell = sheet.cell(sheet.nrows-3, 32)
     dist_mean_t_fourth = cell.value
+    cell = sheet.cell(sheet.nrows-3, 39)
+    dist_mean_b_third = cell.value
+    cell = sheet.cell(sheet.nrows-3, 40)
+    dist_mean_t_2third = cell.value
 
     cell = sheet.cell(sheet.nrows-2, 7)
     dist_std_centre = cell.value
@@ -107,31 +111,39 @@ def plot(xls, name):
     dist_std_b_3fourth = cell.value
     cell = sheet.cell(sheet.nrows-2, 32)
     dist_std_t_fourth = cell.value
+    cell = sheet.cell(sheet.nrows-2, 39)
+    dist_std_b_third = cell.value
+    cell = sheet.cell(sheet.nrows-2, 40)
+    dist_std_t_2third = cell.value
 
-    N = 8
-    means = (dist_mean_centre, dist_mean_wall, dist_mean_b_fourth, dist_mean_t_3fourth, dist_mean_b_half, dist_mean_t_half, dist_mean_b_3fourth, dist_mean_t_fourth)
-    std = (dist_std_centre, dist_std_wall, dist_std_b_fourth, dist_std_t_3fourth, dist_std_b_half, dist_std_t_half, dist_std_b_3fourth, dist_std_t_fourth)
+    y1 = sheet.col_values(7, 2, sheet.nrows-4)
+    y2 = sheet.col_values(8, 2, sheet.nrows-4)
+    y3 = sheet.col_values(15, 2, sheet.nrows-4)
+    y4 = sheet.col_values(16, 2, sheet.nrows-4)
+    y5 = sheet.col_values(23, 2, sheet.nrows-4)
+    y6 = sheet.col_values(24, 2, sheet.nrows-4)
+    y7 = sheet.col_values(31, 2, sheet.nrows-4)
+    y8 = sheet.col_values(32, 2, sheet.nrows-4)
+    y9 = sheet.col_values(39, 2, sheet.nrows-4)
+    y10 = sheet.col_values(40, 2, sheet.nrows-4)
+
+    N=10 
+    means = (dist_mean_centre, dist_mean_wall, dist_mean_b_fourth, dist_mean_t_3fourth, dist_mean_b_half, dist_mean_t_half, dist_mean_b_3fourth, dist_mean_t_fourth, dist_mean_b_third, dist_mean_t_2third)
+    std = (dist_std_centre, dist_std_wall, dist_std_b_fourth, dist_std_t_3fourth, dist_std_b_half, dist_std_t_half, dist_std_b_3fourth, dist_std_t_fourth, dist_std_b_third, dist_std_t_2third)
 
     ind = np.arange(N)  # the x locations for the groups
-    width = 0.35       # the width of the bars
 
     fig, ax = plt.subplots()
-    rects = ax.bar(ind, means, width, color='r', yerr=std)
-
+    data = [y1,y2,y3,y4,y5,y6,y7,y8,y9,y10]
+        
+    plt.errorbar(ind, means, std, linestyle='None', marker='o', markersize=8, mfc='none', mec='r', color='r', capsize=5)
     ax.set_ylabel('Distance (mm)')
     ax.set_title('Total distance swam')
-    ax.set_xticks(ind + width/32)
-    ax.set_xticklabels(('centre', 'wall', 'bottom1/4', 'top3/4', 'bottom1/2', 'top1/2', 'bottom3/4', 'top1/4'))
-
-    def autolabel(rects):
-        for rect in rects:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
-                    '%d' % int(height),
-                    ha='center', va='bottom')
-
-    autolabel(rects)
-    plt.savefig('output/distance_bar_' + name + '.png')
+    ax.set_xticks(ind)
+    ax.set_xticklabels(('centre', 'wall', 'bottom1/4', 'top3/4', 'bottom1/2', 'top1/2', 'bottom3/4', 'top1/4', 'bottom1/3', 'top2/3'))
+    ax.plot(data, linestyle='None', marker='.', markersize=3, color='grey')
+        # autolabel(rects)
+    plt.savefig('output/distance_scatter_' + name + '.png')
 
     # time graph: stacked bar
 
