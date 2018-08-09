@@ -54,7 +54,7 @@ def chunks(l, n):
 
 def latencies(lim, big_list, frame_rate):
 	i = 0
-	ans = [None, None]
+	ans = [0, 0]
 	hit_bottom = False
 	for j in range(len(big_list)):
 		if i == 2:
@@ -68,6 +68,7 @@ def latencies(lim, big_list, frame_rate):
 			i += 1
 			hit_bottom = False			
 	return (ans[0]+1)/frame_rate, (ans[1]+1)/frame_rate
+
 
 def all_satisfy(lst, fn):
 	for i in lst:
