@@ -14,7 +14,7 @@ import xlrd
 def plot(xls, name):
 
     # visual representation graph: alignment test
-
+    plt.clf()
     workbook = open_workbook(xls)
     sheet = workbook.sheet_by_index(0)
     cell = sheet.cell(sheet.nrows-3, 3)
@@ -165,6 +165,10 @@ def plot(xls, name):
     time_mean_b_3fourth = cell.value
     cell = sheet.cell(sheet.nrows-3, 28)
     time_mean_t_fourth = cell.value
+    cell = sheet.cell(sheet.nrows-3, 35)
+    time_mean_b_third = cell.value
+    cell = sheet.cell(sheet.nrows-3, 36)
+    time_mean_t_2third = cell.value
 
     cell = sheet.cell(sheet.nrows-2, 3)
     time_std_centre = cell.value
@@ -182,10 +186,14 @@ def plot(xls, name):
     time_std_b_3fourth = cell.value
     cell = sheet.cell(sheet.nrows-2, 28)
     time_std_t_fourth = cell.value
+    cell = sheet.cell(sheet.nrows-2, 35)
+    time_std_b_third = cell.value
+    cell = sheet.cell(sheet.nrows-2, 36)
+    time_std_t_2third = cell.value
 
-    raw_data = {'% Time': ['wall', 'bottom 1/4', 'bottom 1/2', 'bottom 3/4'],
-            '1st': [time_mean_wall, time_mean_b_fourth, time_mean_b_half, time_mean_b_3fourth],
-            '2nd': [time_mean_centre, time_mean_t_3fourth, time_mean_t_half, time_mean_t_fourth]}
+    raw_data = {'% Time': ['wall', 'bottom 1/4', 'bottom 1/2', 'bottom 3/4', 'bottom 1/3'],
+            '1st': [time_mean_wall, time_mean_b_fourth, time_mean_b_half, time_mean_b_3fourth, time_mean_b_third],
+            '2nd': [time_mean_centre, time_mean_t_3fourth, time_mean_t_half, time_mean_t_fourth, time_mean_t_2third]}
     df = pd.DataFrame(raw_data, columns = ['% Time', '1st', '2nd'])
     df
 
@@ -194,8 +202,8 @@ def plot(xls, name):
     bar_l = [i-2 for i in range(len(df['1st']))]
     tick_pos = [i+(bar_width/32) for i in bar_l]
 
-    sd1st = [time_std_wall, time_std_b_fourth, time_std_b_half, time_std_b_3fourth]
-    sd2nd = [time_std_centre, time_std_t_3fourth, time_std_t_half, time_std_t_fourth]
+    sd1st = [time_std_wall, time_std_b_fourth, time_std_b_half, time_std_b_3fourth, time_std_b_third]
+    sd2nd = [time_std_centre, time_std_t_3fourth, time_std_t_half, time_std_t_fourth, time_std_t_2third]
 
     ax1.bar(bar_l,
             df['1st'],
@@ -213,7 +221,7 @@ def plot(xls, name):
             yerr=sd2nd)
 
     rects = ax1.patches
-    labels = ['centre', 'top 3/4', 'top 1/2', 'top 1/4']
+    labels = ['centre', 'top 3/4', 'top 1/2', 'top 1/4', 'top 2/3']
 
     for rect, label in zip(rects, labels):
         height = rect.get_height()

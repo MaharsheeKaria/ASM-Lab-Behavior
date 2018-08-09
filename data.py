@@ -8,8 +8,11 @@ def find_transitions(lst, lim):
 	for n in lst:
 		if n>=lim:
 			a = lst.index(n) + 1
-			if lst[a]<lim:
-				c += 1
+			try:
+				if lst[a]<lim:
+					c += 1	
+			except (IndexError):
+				pass
 	return c
 
 def find_darts(lst, lim, sd):
