@@ -142,6 +142,8 @@ def plot(xls, name):
     ax.set_xticks(ind)
     ax.set_xticklabels(('centre', 'wall', 'bottom1/4', 'top3/4', 'bottom1/2', 'top1/2', 'bottom3/4', 'top1/4', 'bottom1/3', 'top2/3'))
     ax.plot(data, linestyle='None', marker='.', markersize=3, color='grey')
+    plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+    plt.tight_layout()
         # autolabel(rects)
     plt.savefig('output/distance_scatter_' + name + '.png')
 
