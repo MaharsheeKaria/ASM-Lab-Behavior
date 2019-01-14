@@ -1,0 +1,4 @@
+File name, Latency for 2nd enter,
+
+raw/TpLtNew_MF8.xls_Tank_1,33
+raw/TpLtNew_MF8.xls_Tank_2,87

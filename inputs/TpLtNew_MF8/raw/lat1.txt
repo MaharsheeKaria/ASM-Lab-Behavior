@@ -1,0 +1,4 @@
+File name, Latency for 1st entry,
+
+raw/TpLtNew_MF8.xls_Tank_1,6
+raw/TpLtNew_MF8.xls_Tank_2,25

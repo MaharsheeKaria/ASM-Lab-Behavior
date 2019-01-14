@@ -1,0 +1,4 @@
+File name, Time%,
+, ,centre,wall,
+raw/TpLtNew_MF8.xls_Tank_1,39.12310286677909,60.87689713322091
+raw/TpLtNew_MF8.xls_Tank_2,36.195286195286194,63.804713804713806
