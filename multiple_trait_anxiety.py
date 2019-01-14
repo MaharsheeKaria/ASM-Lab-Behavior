@@ -2,7 +2,7 @@ from definitions import scale, get_all_sheets
 from data import heat_map
 from stats import calc, calc2
 from plt import plot
-from conf_int import conf_int_1, conf_int_2, conf_int_3
+# from conf_int import conf_int_1, conf_int_2, conf_int_3
 import glob
 import csv
 import os
@@ -38,12 +38,24 @@ for i in loops:
 		val = abs(end-start_) 
 
 		header_1 = 'File name,Total time, ,Time %, ,Average velocity, ,Total distance, ,Total time, ,Time %, ,Average velocity, ,Total distance, ,Total time, ,Time %, ,Average velocity, ,Total distance, ,Total time, ,Time %, ,Average velocity, ,Total distance, ,Total time, ,Time %, ,Average velocity, ,Total distance, ,Latency for 1st entry,Latency for 2nd entry,No. of transitions to top half,Total freeze time,No. of freezing episodes,No. of darting episodes\n ,centre,wall,centre,wall,centre,wall,centre,wall,bottom 1/4,top 3/4,bottom 1/4,top 3/4,bottom 1/4,top 3/4,bottom 1/4,top 3/4,bottom 1/2,top 1/2,bottom 1/2,top 1/2,bottom 1/2,top 1/2,bottom 1/2,top 1/2,bottom 3/4,top 1/4,bottom 3/4,top 1/4,bottom 3/4,top 1/4,bottom 3/4,top 1/4,bottom 1/3,top 2/3,bottom 1/3,top 2/3,bottom 1/3,top 2/3,bottom 1/3,top 2/3\n'
-		with open(path + 'output/extracted_info.txt', 'w') as f:
+		with open(path + 'raw/extracted_info.txt', 'w') as f:
 			f.write(str(header_1))
 
-		header_2 = 'File name,% time in bottom 1/2, , , , , , , , , ,% time in bottom 1/4, , , , , , , , , ,% time in bottom 1/3, , , , , , , , , ,\n ,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10, ,\n'
-		with open(path + 'output/time_calc.txt', 'w') as f:
-			f.write(str(header_2))
+		header_3 = 'File name, Latency for 1st entry,\n\n'
+		with open(path + 'raw/lat1.txt', 'w') as f:
+			f.write(str(header_3))
+
+		header_4 = 'File name, Latency for 2nd enter,\n\n'
+		with open(path + 'raw/lat2.txt', 'w') as f:
+			f.write(str(header_4))
+
+		header_5 = 'File name,No. of transitions to top half,No. of darting episodes,\n\n'
+		with open(path + 'raw/dart_trans.txt', 'w') as f:
+			f.write(str(header_5))
+
+		header_6 = 'File name, Time%,\n, ,centre,wall,\n'
+		with open(path + 'raw/time_wall.txt', 'w') as f:
+			f.write(str(header_6))
 
 		os.chdir(path)
 		for filename in glob.glob('*.xls'):
@@ -72,12 +84,8 @@ for i in loops:
 
 				file_name = raw_file + '_Tank_' + str(i)
 				xls_input = raw_sheet + '.txt'
-				heat_map(X0, Xn, Y0, Yn, xls_input, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name, val, name)
+				XY = heat_map(X0, Xn, Y0, Yn, xls_input, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name, name)
 
 		calc("output/Extracted_data_" + name + ".xls")
-		calc2("output/Extracted_data_" + name + ".xls")
 		plot("output/Extracted_data_" + name + ".xls", name)
-		conf_int_1("output/Extracted_data_" + name + ".xls", name)
-		conf_int_2("output/Extracted_data_" + name + ".xls", name)
-		conf_int_3("output/Extracted_data_" + name + ".xls", name)
 		os.chdir(og)

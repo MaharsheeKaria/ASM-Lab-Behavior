@@ -36,7 +36,7 @@ def calc(xls):
 def calc2(xls):
 	row_vals, avg, sd, conf_int, conf = [],[],[],[],[]
 	rb = xlrd.open_workbook(xls)
-	sheet1 = rb.sheet_by_index(1)
+	sheet1 = rb.sheet_by_index(5)
 	nxt_row = sheet1.nrows + 1
 	prev_col = sheet1.ncols-2
 	for i in range(1, (sheet1.ncols-2)):
@@ -50,7 +50,7 @@ def calc2(xls):
 		row_vals = []
 
 	wb = copy(rb)
-	sheet1 = wb.get_sheet(1)
+	sheet1 = wb.get_sheet(5)
 	for i,items in enumerate(avg):
 		sheet1.write(nxt_row, i+1, float(items))
 	for i,items in enumerate(sd):

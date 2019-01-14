@@ -2,6 +2,7 @@ import numpy as np
 import csv
 from xlrd import open_workbook
 import xlwt
+from xlutils.copy import copy
 
 def find_transitions(lst, lim):
 	c = 0
@@ -113,9 +114,8 @@ def float_if_possible(strg):
     except ValueError:
         return strg
 
-def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name, val, name):
-	chunk_value = int(val/10)
-	XY, XY_1, XY_2, XY_3, XY_4, XY_5, XY_6, XY_7, XY_8, XY_9, XY_10, XY_1_half, XY_2_half, XY_3_half, XY_4_half, XY_5_half, XY_6_half, XY_7_half, XY_8_half, XY_9_half, XY_10_half, XY_1_fourth, XY_2_fourth, XY_3_fourth, XY_4_fourth, XY_5_fourth, XY_6_fourth, XY_7_fourth, XY_8_fourth, XY_9_fourth, XY_10_fourth, XY_1_third, XY_2_third, XY_3_third, XY_4_third, XY_5_third, XY_6_third, XY_7_third, XY_8_third, XY_9_third, XY_10_third = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
+def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name, name):
+	XY = []
 	with open(input_file, 'r') as f:
 		f.readline()
 		for l in f.readlines():
@@ -274,119 +274,186 @@ def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y
 
 	table = [file_name, time_centre, time_boundary, time_centre_perc, time_boundary_perc, avgV_centre, avgV_boundary, sumS_centre, sumS_boundary, time_bottom_fourth, time_top_3fourth, time_bottom_fourth_perc, time_top_3fourth_perc, avgV_bottom_fourth, avgV_top_3fourth, sumS_bottom_fourth, sumS_top_3fourth, time_bottom_half, time_top_half, time_bottom_half_perc, time_top_half_perc, avgV_bottom_half, avgV_top_half, sumS_bottom_half, sumS_top_half, time_bottom_3fourth, time_top_fourth, time_bottom_3fourth_perc, time_top_fourth_perc, avgV_bottom_3fourth, avgV_top_fourth, sumS_bottom_3fourth, sumS_top_fourth, time_bottom_third, time_top_2third, time_bottom_third_perc, time_top_2third_perc, avgV_bottom_third, avgV_top_2third, sumS_bottom_third, sumS_top_2third, latency1, latency2, transitions, freeze_time, freeze_ep, darts, empty]
 
-	with open('output/extracted_info.txt', "a") as f:
+	lat1 = [file_name, latency1]
+	lat2 = [file_name, latency2]
+	dart_trans = [file_name, transitions, darts]
+	time_wall = [file_name, time_centre_perc, time_boundary_perc]
+
+	with open('raw/extracted_info.txt', "a") as f:
 		writer = csv.writer(f, delimiter=',')
 		writer.writerow(table)
 
+	with open('raw/lat1.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(lat1)
+
+	with open('raw/lat2.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(lat2)
+
+	with open('raw/dart_trans.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(dart_trans)
+
+	with open('raw/time_wall.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(time_wall)
+
 	data1 = []
-	with open('output/extracted_info.txt', 'r') as f:
+	with open('raw/extracted_info.txt', 'r') as f:
 		for line in f:
 			data1.append([word for word in line.split(",") if word])
+	data2 = []
+	with open('raw/lat1.txt', 'r') as f:
+		for line in f:
+			data2.append([word for word in line.split(",") if word])
+	data3 = []
+	with open('raw/lat2.txt', 'r') as f:
+		for line in f:
+			data3.append([word for word in line.split(",") if word])
+	data4 = []
+	with open('raw/dart_trans.txt', 'r') as f:
+		for line in f:
+			data4.append([word for word in line.split(",") if word])
+	data5 = []
+	with open('raw/time_wall.txt', 'r') as f:
+		for line in f:
+			data5.append([word for word in line.split(",") if word])
 
+	wb = xlwt.Workbook()
+	sheet1 = wb.add_sheet("Extracted data")
+	for row_index in range(len(data1)):
+		for col_index in range(len(data1[row_index])):
+			sheet1.write(row_index, col_index, float_if_possible(data1[row_index][col_index]))
+	sheet2 = wb.add_sheet("Latency for first entry")
+	for row_index in range(len(data2)):
+		for col_index in range(len(data2[row_index])):
+			sheet2.write(row_index, col_index, float_if_possible(data2[row_index][col_index]))
+	sheet3 = wb.add_sheet("Latency for second entry")
+	for row_index in range(len(data3)):
+		for col_index in range(len(data3[row_index])):
+			sheet3.write(row_index, col_index, float_if_possible(data3[row_index][col_index]))
+	sheet4 = wb.add_sheet("Transitions & Darting")
+	for row_index in range(len(data4)):
+		for col_index in range(len(data4[row_index])):
+			sheet4.write(row_index, col_index, float_if_possible(data4[row_index][col_index]))
+	sheet5 = wb.add_sheet("Time at Centre & Wall")
+	for row_index in range(len(data5)):
+		for col_index in range(len(data5[row_index])):
+			sheet5.write(row_index, col_index, float_if_possible(data5[row_index][col_index]))
+
+			
+	wb.save("output/Extracted_data_" + name + ".xls")
+
+	return XY	
 
 # time intervals:
+def time_interval(XY, frame_rate, Y_half_lim, Y_fourth_lim, Y_third_lim, file_name, val, name):
+	XY_1, XY_2, XY_3, XY_4, XY_5, XY_6, XY_7, XY_8, XY_9, XY_10, XY_1_third, XY_2_third, XY_3_third, XY_4_third, XY_5_third, XY_6_third, XY_7_third, XY_8_third, XY_9_third, XY_10_third, empty = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
+	chunk_value = int(val/10)
 	part1, part2, part3, part4, part5, part6, part7, part8, part9, part10 = (part for part in chunks((XY), chunk_value))
+
+	
 	for x, y in part1:
-		if y>=Y_half_lim:
-			XY_1_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_1_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_1_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_1_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_1_third.append((x,y))
 	
 	for x, y in part2:
-		if y>=Y_half_lim:
-			XY_2_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_2_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_2_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_2_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_2_third.append((x,y))
 	
 	for x, y in part3:
-		if y>=Y_half_lim:
-			XY_3_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_3_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_3_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_3_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_3_third.append((x,y))
 	
 	for x, y in part4:
-		if y>=Y_half_lim:
-			XY_4_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_4_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_4_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_4_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_4_third.append((x,y))
 	
 	for x, y in part5:
-		if y>=Y_half_lim:
-			XY_5_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_5_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_5_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_5_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_5_third.append((x,y))
 	
 	for x, y in part6:
-		if y>=Y_half_lim:
-			XY_6_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_6_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_6_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_6_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_6_third.append((x,y))
 	
 	for x, y in part7:
-		if y>=Y_half_lim:
-			XY_7_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_7_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_7_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_7_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_7_third.append((x,y))
 	
 	for x, y in part8:
-		if y>=Y_half_lim:
-			XY_8_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_8_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_8_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_8_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_8_third.append((x,y))
 	
 	for x, y in part9:
-		if y>=Y_half_lim:
-			XY_9_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_9_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_9_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_9_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_9_third.append((x,y))
 	
 	for x, y in part10:
-		if y>=Y_half_lim:
-			XY_10_half.append((x,y))
-		if y>=Y_fourth_lim:
-			XY_10_fourth.append((x,y))
+		# if y>=Y_half_lim:
+		# 	XY_10_half.append((x,y))
+		# if y>=Y_fourth_lim:
+		# 	XY_10_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_10_third.append((x,y))
 
-
-	time_1_half = (float(time(XY_1_half, frame_rate))/60)*100
-	time_2_half = (float(time(XY_2_half, frame_rate))/60)*100
-	time_3_half = (float(time(XY_3_half, frame_rate))/60)*100
-	time_4_half = (float(time(XY_4_half, frame_rate))/60)*100
-	time_5_half = (float(time(XY_5_half, frame_rate))/60)*100
-	time_6_half = (float(time(XY_6_half, frame_rate))/60)*100
-	time_7_half = (float(time(XY_7_half, frame_rate))/60)*100
-	time_8_half = (float(time(XY_8_half, frame_rate))/60)*100
-	time_9_half = (float(time(XY_9_half, frame_rate))/60)*100
-	time_10_half = (float(time(XY_10_half, frame_rate))/60)*100
-	time_1_fourth = (float(time(XY_1_fourth, frame_rate))/60)*100
-	time_2_fourth = (float(time(XY_2_fourth, frame_rate))/60)*100
-	time_3_fourth = (float(time(XY_3_fourth, frame_rate))/60)*100
-	time_4_fourth = (float(time(XY_4_fourth, frame_rate))/60)*100
-	time_5_fourth = (float(time(XY_5_fourth, frame_rate))/60)*100
-	time_6_fourth = (float(time(XY_6_fourth, frame_rate))/60)*100
-	time_7_fourth = (float(time(XY_7_fourth, frame_rate))/60)*100
-	time_8_fourth = (float(time(XY_8_fourth, frame_rate))/60)*100
-	time_9_fourth = (float(time(XY_9_fourth, frame_rate))/60)*100
-	time_10_fourth = (float(time(XY_10_fourth, frame_rate))/60)*100
+	# time_1_half = (float(time(XY_1_half, frame_rate))/60)*100
+	# time_2_half = (float(time(XY_2_half, frame_rate))/60)*100
+	# time_3_half = (float(time(XY_3_half, frame_rate))/60)*100
+	# time_4_half = (float(time(XY_4_half, frame_rate))/60)*100
+	# time_5_half = (float(time(XY_5_half, frame_rate))/60)*100
+	# time_6_half = (float(time(XY_6_half, frame_rate))/60)*100
+	# time_7_half = (float(time(XY_7_half, frame_rate))/60)*100
+	# time_8_half = (float(time(XY_8_half, frame_rate))/60)*100
+	# time_9_half = (float(time(XY_9_half, frame_rate))/60)*100
+	# time_10_half = (float(time(XY_10_half, frame_rate))/60)*100
+	# time_1_fourth = (float(time(XY_1_fourth, frame_rate))/60)*100
+	# time_2_fourth = (float(time(XY_2_fourth, frame_rate))/60)*100
+	# time_3_fourth = (float(time(XY_3_fourth, frame_rate))/60)*100
+	# time_4_fourth = (float(time(XY_4_fourth, frame_rate))/60)*100
+	# time_5_fourth = (float(time(XY_5_fourth, frame_rate))/60)*100
+	# time_6_fourth = (float(time(XY_6_fourth, frame_rate))/60)*100
+	# time_7_fourth = (float(time(XY_7_fourth, frame_rate))/60)*100
+	# time_8_fourth = (float(time(XY_8_fourth, frame_rate))/60)*100
+	# time_9_fourth = (float(time(XY_9_fourth, frame_rate))/60)*100
+	# time_10_fourth = (float(time(XY_10_fourth, frame_rate))/60)*100
 	time_1_third = (float(time(XY_1_third, frame_rate))/60)*100
 	time_2_third = (float(time(XY_2_third, frame_rate))/60)*100
 	time_3_third = (float(time(XY_3_third, frame_rate))/60)*100
@@ -398,25 +465,27 @@ def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y
 	time_9_third = (float(time(XY_9_third, frame_rate))/60)*100
 	time_10_third = (float(time(XY_10_third, frame_rate))/60)*100
 
-	times = [file_name, time_1_half, time_2_half, time_3_half, time_4_half, time_5_half, time_6_half, time_7_half, time_8_half, time_9_half, time_10_half, time_1_fourth, time_2_fourth, time_3_fourth, time_4_fourth, time_5_fourth, time_6_fourth, time_7_fourth, time_8_fourth, time_9_fourth, time_10_fourth, time_1_third, time_2_third, time_3_third, time_4_third, time_5_third, time_6_third, time_7_third, time_8_third, time_9_third, time_10_third, empty]
+	times = [file_name, time_1_third, time_2_third, time_3_third, time_4_third, time_5_third, time_6_third, time_7_third, time_8_third, time_9_third, time_10_third, empty]
 
-	with open('output/time_calc.txt', "a") as f:
+	with open('raw/time_calc.txt', "a") as f:
 		writer = csv.writer(f, delimiter=',')
 		writer.writerow(times)
 
-	data2 = []
-	with open('output/time_calc.txt', 'r') as f:
+	data6 = []
+	with open('raw/time_calc.txt', 'r') as f:
 		for line in f:
-			data2.append([word for word in line.split(",") if word])
+			data6.append([word for word in line.split(",") if word])
 
-# write xls:
-	wb = xlwt.Workbook()
-	sheet1 = wb.add_sheet("Extracted data")
-	for row_index in range(len(data1)):
-		for col_index in range(len(data1[row_index])):
-			sheet1.write(row_index, col_index, float_if_possible(data1[row_index][col_index]))
-	sheet2 = wb.add_sheet("Time calculations")
-	for row_index in range(len(data2)):
-		for col_index in range(len(data2[row_index])):
-			sheet2.write(row_index, col_index, float_if_possible(data2[row_index][col_index]))
+# write new sheet in xls:
+	rb = open_workbook("output/Extracted_data_" + name + ".xls")
+	wb = copy(rb)
+	sheet6 = wb.add_sheet("Time in bottom third")
+	for row_index in range(len(data6)):
+		for col_index in range(len(data6[row_index])):
+			sheet6.write(row_index, col_index, float_if_possible(data6[row_index][col_index]))
+	# sheet3 = wb.add_sheet("Latency for first entry")
+	# wb.get_sheet_by_name("Extracted_data")
+	# for i,row in enumerate(Extracted_data.iter_rows()):
+	# 	for j,col in enumerate(row):
+ #  			sheet3.cell(row=0,column=0).value = col.value
 	wb.save("output/Extracted_data_" + name + ".xls")
