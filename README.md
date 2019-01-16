@@ -18,10 +18,6 @@ Define the number of frames: **18000**
 
 Define total data collection time in seconds: **600**
 
-Define data extraction start minute: **0**
-
-Define data extraction end minute: **10**
-
 # definitions.py
 This script mainly involves segmenting the workbook into worksheets and scaling all the raw data into .txt files. All the information gets saved in the raw folder. It also scans the data to find X-min, X-max, Y-min, Y-max values. 
 
