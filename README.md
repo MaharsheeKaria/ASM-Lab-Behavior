@@ -27,8 +27,7 @@ This is where all the raw data from the .txt files is manipulated and the output
 It makes the following calculations in the first sheet called 'Extracted data': 
 Total time, % time, Average velocity, Total distance - at the centre, wall, bottom 1/4, top 3/4, bottom 1/2, top 1/2, bottom 3/4, top 1/4, bottom 1/3, top 2/3 - Latencies, Transitions, Total freezing time, Number of freezing episodes, Number of darting episodes
 
-It makes the following calculations in the second sheet called 'Time calculations':
-% time in the bottom 1/2, bottom 1/4, bottom 1/3
+It makes the following calculations through sheets 2-6: Latency for first entry; Latency for second entry; Transitions & Darting; Time at Centre & Wall; Time in bottom third
 
 # stats.py
 The script uses the manipulated data and calculates the mean, standard deviation and 95% confidence intervals of all the data and writes it into the Extracted_data.xls workbook.
@@ -37,7 +36,7 @@ The script uses the manipulated data and calculates the mean, standard deviation
 This plots information about time and distance using the data from the first sheet in the final excel file. Three plots are created through this which can be found in the output folder - one visual representation graph, one scatterplot representing mean and standard deviation along with the individual points, and one stacked bar graph showing the different conditions vs percentage time.
 
 # conf_int.py
-This script plots the remaining 3 graphs, also found in the output folder. These are representations of the information found in the second sheet of the final excel file. The graphs plot % time spent in the bottom of the tank along with 95% confidence interval.
+This script plots the remaining graph, also found in the output folder. This is a representation of the information found in the sixth sheet of the final excel file. The graph plots % time spent in the bottom third of the tank along with 95% confidence interval.
 
 # multiple_trait_anxiety.py
 This script is essentially identical to the trait_anxiety script. However, it allows the user to input multiple time interval values and then runs the scripts on loop. This saves the user time from having to recall the scripts again and again when testing for different time intervals. Like trait_anxiety, this script also prompts you to define certain values/terms in order to extract the information. These are the prompts you should expect with example answers in bold:
@@ -51,3 +50,5 @@ Define distance from wall in mm: **20**
 Define the number of frames: **18000**
 
 Define data extraction start and end minutes (in brackets and comma spaced); Can define multiple time intervals (comma spaced): **(0,2),(2,4),(4,6),(6,8),(8,10),(0,5),(5,10)**
+
+This script however, gives you only the first 5 of the 6 sheets that trait_anxiety.py gives. 
