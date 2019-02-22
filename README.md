@@ -27,7 +27,7 @@ This is where all the raw data from the .txt files is manipulated and the output
 It makes the following calculations in the first sheet called 'Extracted data': 
 Total time, % time, Average velocity, Total distance - at the centre, wall, bottom 1/4, top 3/4, bottom 1/2, top 1/2, bottom 3/4, top 1/4, bottom 1/3, top 2/3 - Latencies, Transitions, Total freezing time, Number of freezing episodes, Number of darting episodes
 
-It makes the following calculations through sheets 2-6: Latency for first entry; Latency for second entry; Transitions & Darting; Time at Centre & Wall; Time in bottom third
+It makes the following calculations through sheets 2-8: Time in bottom third; Latency for first entry; Latency for second entry; Transitions; Darting; Time at Wall; Time at Centre
 
 # stats.py
 The script uses the manipulated data and calculates the mean, standard deviation and 95% confidence intervals of all the data and writes it into the Extracted_data.xls workbook.
@@ -51,4 +51,4 @@ Define the number of frames: **18000**
 
 Define data extraction start and end minutes (in brackets and comma spaced); Can define multiple time intervals (comma spaced): **(0,2),(2,4),(4,6),(6,8),(8,10),(0,5),(5,10)**
 
-This script however, gives you only the first 5 of the 6 sheets that trait_anxiety.py gives. 
+This script however, gives you only the first sheet that trait_anxiety.py gives. 
