@@ -1,6 +1,6 @@
 from definitions import scale, get_all_sheets
 from data import heat_map, time_interval
-from stats import calc, calc2
+from stats import calc, calc2, calc3, calc4, calc5, calc6
 from plt import plot
 from conf_int import conf_int_1
 import glob
@@ -10,18 +10,13 @@ import numpy as np
 
 #user-defined inputs
 folder = input(str("Define folder name (within quotations): "))
-# folder = "ILR_DoubleMut"
 X_mm = input("Define the X-length of the tank in mm: ")
 X_length = X_mm
-# X_length = 200
 dist = input("Define distance from wall in mm: ")
 dist_from_wall = dist
-# dist_from_wall = 20 
 no_of_frames = input("Define the number of frames: ")
-# no_of_frames = 5999
 frames = no_of_frames + 10
 total_time = input("Define total data collection time in seconds: ")
-# total_time = 600
 frame_rate = no_of_frames/total_time
 
 start_time = 0
@@ -42,21 +37,29 @@ header_2 = 'File name,% time in bottom 1/3, , , , , , , , , ,\nminute,1,2,3,4,5,
 with open(path + 'raw/time_calc.txt', 'w') as f:
 	f.write(str(header_2))
 
-header_3 = 'File name, Latency for 1st entry,\n\n'
+header_3 = 'File name, Latency for 1st entry,\nminute,1,2,3,4,5,6,7,8,9,10, ,\n'
 with open(path + 'raw/lat1.txt', 'w') as f:
 	f.write(str(header_3))
 
-header_4 = 'File name, Latency for 2nd enter,\n\n'
+header_4 = 'File name, Latency for 2nd enter,\nminute,1,2,3,4,5,6,7,8,9,10, ,\n'
 with open(path + 'raw/lat2.txt', 'w') as f:
 	f.write(str(header_4))
 
-header_5 = 'File name,No. of transitions to top half,No. of darting episodes,\n\n'
-with open(path + 'raw/dart_trans.txt', 'w') as f:
+header_5 = 'File name,No. of transitions to top half,\nminute,1,2,3,4,5,6,7,8,9,10, ,\n'
+with open(path + 'raw/tran.txt', 'w') as f:
 	f.write(str(header_5))
 
-header_6 = 'File name, Time%,\n, ,centre,wall,\n'
-with open(path + 'raw/time_wall.txt', 'w') as f:
+header_6 = 'File name,No. of darting episodes,\nminute,1,2,3,4,5,6,7,8,9,10, ,\n'
+with open(path + 'raw/dart.txt', 'w') as f:
 	f.write(str(header_6))
+
+header_7 = 'File name, %Time in boundary,\nminute,1,2,3,4,5,6,7,8,9,10, ,\n'
+with open(path + 'raw/time_wall.txt', 'w') as f:
+	f.write(str(header_7))
+
+header_8 = 'File name, %Time in centre,\nminute,1,2,3,4,5,6,7,8,9,10, ,\n'
+with open(path + 'raw/time_centre.txt', 'w') as f:
+	f.write(str(header_8))
 
 os.chdir(path)
 for filename in glob.glob('*.xls'):
@@ -86,11 +89,17 @@ for filename in glob.glob('*.xls'):
 		file_name = raw_file + '_Tank_' + str(i)
 		xls_input = raw_sheet + '.txt'
 		XY = heat_map(X0, Xn, Y0, Yn, xls_input, frame_rate, Y_half_lim, Y_fourth_lim, Y_3fourth_lim, Y_third_lim, file_name, name)
-		time_interval(XY, frame_rate, Y_half_lim, Y_fourth_lim, Y_third_lim, file_name, val, name)
+
+		if XY is None:
+			pass
+		else:
+			time_interval(XY, frame_rate, Y_half_lim, Y_fourth_lim, Y_third_lim, file_name, val, name, X0, Xn, Y0, Yn)
 
 calc("output/Extracted_data_" + name + ".xls")
 calc2("output/Extracted_data_" + name + ".xls")
+calc3("output/Extracted_data_" + name + ".xls")
+calc4("output/Extracted_data_" + name + ".xls")
+calc5("output/Extracted_data_" + name + ".xls")
+calc6("output/Extracted_data_" + name + ".xls")
 plot("output/Extracted_data_" + name + ".xls", name)
 conf_int_1("output/Extracted_data_" + name + ".xls", name)
-# conf_int_2("output/Extracted_data_" + name + ".xls", name)
-# conf_int_3("output/Extracted_data_" + name + ".xls", name)
