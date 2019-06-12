@@ -14,6 +14,7 @@ import xlrd
 def plot(xls, name):
 
     # visual representation graph: alignment test
+    
     plt.clf()
     workbook = open_workbook(xls)
     sheet = workbook.sheet_by_index(0)
@@ -144,7 +145,6 @@ def plot(xls, name):
     ax.plot(data, linestyle='None', marker='.', markersize=3, color='grey')
     plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
     plt.tight_layout()
-        # autolabel(rects)
     plt.savefig('output/distance_scatter_' + name + '.png')
 
     # time graph: stacked bar

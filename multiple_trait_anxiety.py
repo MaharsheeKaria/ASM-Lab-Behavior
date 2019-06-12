@@ -10,21 +10,17 @@ import numpy as np
 
 #user-defined inputs
 folder = input(str("Define folder name (within quotations): "))
-# folder = "ILR_DoubleMut"
 path = 'inputs/' + folder + '/'
 X_mm = input("Define the X-length of the tank in mm: ")
 X_length = X_mm
-# X_length = 200
 dist = input("Define distance from wall in mm: ")
 dist_from_wall = dist
-# dist_from_wall = 20 
 no_of_frames = input("Define the number of frames: ")
 frames = no_of_frames + 10
 total_time = input("Define total data collection time in seconds: ")
 frame_rate = no_of_frames/total_time
 
 start_end_time = input(str("Define data extraction start and end minutes (in brackets and comma spaced); Can define multiple time intervals (comma spaced): "))
-# start_end_time = (0,5),(5,10)
 og = os.getcwd()
 
 loops = [start_end_time]
@@ -32,7 +28,6 @@ for i in loops:
 	for a,b in i:
 		start_ = (a)*(frame_rate*60) 
 		start = start_ + 1
-		# end_time = input(str("Define data extraction end minute: "))
 		end = (b)*(frame_rate*60)
 		name = str(a) + 'to' + str(b) + 'minutes'
 		val = abs(end-start_) 

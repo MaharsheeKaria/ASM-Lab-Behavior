@@ -274,186 +274,162 @@ def heat_map(X0, Xn, Y0, Yn, input_file, frame_rate, Y_half_lim, Y_fourth_lim, Y
 
 	table = [file_name, time_centre, time_boundary, time_centre_perc, time_boundary_perc, avgV_centre, avgV_boundary, sumS_centre, sumS_boundary, time_bottom_fourth, time_top_3fourth, time_bottom_fourth_perc, time_top_3fourth_perc, avgV_bottom_fourth, avgV_top_3fourth, sumS_bottom_fourth, sumS_top_3fourth, time_bottom_half, time_top_half, time_bottom_half_perc, time_top_half_perc, avgV_bottom_half, avgV_top_half, sumS_bottom_half, sumS_top_half, time_bottom_3fourth, time_top_fourth, time_bottom_3fourth_perc, time_top_fourth_perc, avgV_bottom_3fourth, avgV_top_fourth, sumS_bottom_3fourth, sumS_top_fourth, time_bottom_third, time_top_2third, time_bottom_third_perc, time_top_2third_perc, avgV_bottom_third, avgV_top_2third, sumS_bottom_third, sumS_top_2third, latency1, latency2, transitions, freeze_time, freeze_ep, darts, empty]
 
-	lat1 = [file_name, latency1]
-	lat2 = [file_name, latency2]
-	dart_trans = [file_name, transitions, darts]
-	time_wall = [file_name, time_centre_perc, time_boundary_perc]
-
 	with open('raw/extracted_info.txt', "a") as f:
 		writer = csv.writer(f, delimiter=',')
 		writer.writerow(table)
-
-	with open('raw/lat1.txt', 'a') as f:
-		writer = csv.writer(f, delimiter=',')
-		writer.writerow(lat1)
-
-	with open('raw/lat2.txt', 'a') as f:
-		writer = csv.writer(f, delimiter=',')
-		writer.writerow(lat2)
-
-	with open('raw/dart_trans.txt', 'a') as f:
-		writer = csv.writer(f, delimiter=',')
-		writer.writerow(dart_trans)
-
-	with open('raw/time_wall.txt', 'a') as f:
-		writer = csv.writer(f, delimiter=',')
-		writer.writerow(time_wall)
 
 	data1 = []
 	with open('raw/extracted_info.txt', 'r') as f:
 		for line in f:
 			data1.append([word for word in line.split(",") if word])
-	data2 = []
-	with open('raw/lat1.txt', 'r') as f:
-		for line in f:
-			data2.append([word for word in line.split(",") if word])
-	data3 = []
-	with open('raw/lat2.txt', 'r') as f:
-		for line in f:
-			data3.append([word for word in line.split(",") if word])
-	data4 = []
-	with open('raw/dart_trans.txt', 'r') as f:
-		for line in f:
-			data4.append([word for word in line.split(",") if word])
-	data5 = []
-	with open('raw/time_wall.txt', 'r') as f:
-		for line in f:
-			data5.append([word for word in line.split(",") if word])
 
 	wb = xlwt.Workbook()
 	sheet1 = wb.add_sheet("Extracted data")
 	for row_index in range(len(data1)):
 		for col_index in range(len(data1[row_index])):
 			sheet1.write(row_index, col_index, float_if_possible(data1[row_index][col_index]))
-	sheet2 = wb.add_sheet("Latency for first entry")
-	for row_index in range(len(data2)):
-		for col_index in range(len(data2[row_index])):
-			sheet2.write(row_index, col_index, float_if_possible(data2[row_index][col_index]))
-	sheet3 = wb.add_sheet("Latency for second entry")
-	for row_index in range(len(data3)):
-		for col_index in range(len(data3[row_index])):
-			sheet3.write(row_index, col_index, float_if_possible(data3[row_index][col_index]))
-	sheet4 = wb.add_sheet("Transitions & Darting")
-	for row_index in range(len(data4)):
-		for col_index in range(len(data4[row_index])):
-			sheet4.write(row_index, col_index, float_if_possible(data4[row_index][col_index]))
-	sheet5 = wb.add_sheet("Time at Centre & Wall")
-	for row_index in range(len(data5)):
-		for col_index in range(len(data5[row_index])):
-			sheet5.write(row_index, col_index, float_if_possible(data5[row_index][col_index]))
-
 			
 	wb.save("output/Extracted_data_" + name + ".xls")
 
-	return XY	
+	return XY
 
 # time intervals:
-def time_interval(XY, frame_rate, Y_half_lim, Y_fourth_lim, Y_third_lim, file_name, val, name):
-	XY_1, XY_2, XY_3, XY_4, XY_5, XY_6, XY_7, XY_8, XY_9, XY_10, XY_1_third, XY_2_third, XY_3_third, XY_4_third, XY_5_third, XY_6_third, XY_7_third, XY_8_third, XY_9_third, XY_10_third, empty = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
+def time_interval(XY, frame_rate, Y_half_lim, Y_fourth_lim, Y_third_lim, file_name, val, name, X0, Xn, Y0, Yn):
+	Y1, Y2, Y3, Y4, Y5, Y6, Y7, Y8, Y9, Y10, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, XY_1_third, XY_2_third, XY_3_third, XY_4_third, XY_5_third, XY_6_third, XY_7_third, XY_8_third, XY_9_third, XY_10_third, empty = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
+	XY1_centre, XY1_boundary, XY2_centre, XY2_boundary, XY3_centre, XY3_boundary, XY4_centre, XY4_boundary, XY5_centre, XY5_boundary, XY6_centre, XY6_boundary, XY7_centre, XY7_boundary, XY8_centre, XY8_boundary, XY9_centre, XY9_boundary, XY10_centre, XY10_boundary = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
 	chunk_value = int(val/10)
 	part1, part2, part3, part4, part5, part6, part7, part8, part9, part10 = (part for part in chunks((XY), chunk_value))
-
 	
 	for x, y in part1:
-		# if y>=Y_half_lim:
-		# 	XY_1_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_1_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_1_third.append((x,y))
-	
+		X1.append(x)
+		Y1.append(y)
+		V1, S1 = find_vel_dist(frame_rate, X1, Y1)	
+		mean_V1 = np.mean(V1)
+		sd_V1 = np.std(V1)		
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY1_centre.append((x, y))
+		else:
+			XY1_boundary.append((x, y))
+
 	for x, y in part2:
-		# if y>=Y_half_lim:
-		# 	XY_2_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_2_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_2_third.append((x,y))
+		X2.append(x)
+		Y2.append(y)
+		V2, S2 = find_vel_dist(frame_rate, X2, Y2)	
+		mean_V2 = np.mean(V2)
+		sd_V2 = np.std(V2)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY2_centre.append((x, y))
+		else:
+			XY2_boundary.append((x, y))
 	
 	for x, y in part3:
-		# if y>=Y_half_lim:
-		# 	XY_3_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_3_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_3_third.append((x,y))
+		X3.append(x)
+		Y3.append(y)
+		V3, S3 = find_vel_dist(frame_rate, X3, Y3)	
+		mean_V3 = np.mean(V3)
+		sd_V3 = np.std(V3)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY3_centre.append((x, y))
+		else:
+			XY3_boundary.append((x, y))
 	
 	for x, y in part4:
-		# if y>=Y_half_lim:
-		# 	XY_4_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_4_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_4_third.append((x,y))
+		X4.append(x)
+		Y4.append(y)
+		V4, S4 = find_vel_dist(frame_rate, X4, Y4)	
+		mean_V4 = np.mean(V4)
+		sd_V4 = np.std(V4)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY4_centre.append((x, y))
+		else:
+			XY4_boundary.append((x, y))
 	
 	for x, y in part5:
-		# if y>=Y_half_lim:
-		# 	XY_5_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_5_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_5_third.append((x,y))
+		X5.append(x)
+		Y5.append(y)
+		V5, S5 = find_vel_dist(frame_rate, X5, Y5)	
+		mean_V5 = np.mean(V5)
+		sd_V5 = np.std(V5)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY5_centre.append((x, y))
+		else:
+			XY5_boundary.append((x, y))
 	
 	for x, y in part6:
-		# if y>=Y_half_lim:
-		# 	XY_6_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_6_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_6_third.append((x,y))
+		X6.append(x)
+		Y6.append(y)
+		V6, S6 = find_vel_dist(frame_rate, X6, Y6)	
+		mean_V6 = np.mean(V6)
+		sd_V6 = np.std(V6)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY6_centre.append((x, y))
+		else:
+			XY6_boundary.append((x, y))
 	
 	for x, y in part7:
-		# if y>=Y_half_lim:
-		# 	XY_7_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_7_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_7_third.append((x,y))
+		X7.append(x)
+		Y7.append(y)
+		V7, S7 = find_vel_dist(frame_rate, X7, Y7)	
+		mean_V7 = np.mean(V7)
+		sd_V7 = np.std(V7)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY7_centre.append((x, y))
+		else:
+			XY7_boundary.append((x, y))
 	
 	for x, y in part8:
-		# if y>=Y_half_lim:
-		# 	XY_8_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_8_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_8_third.append((x,y))
+		X8.append(x)
+		Y8.append(y)
+		V8, S8 = find_vel_dist(frame_rate, X8, Y8)	
+		mean_V8 = np.mean(V8)
+		sd_V8 = np.std(V8)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY8_centre.append((x, y))
+		else:
+			XY8_boundary.append((x, y))
 	
 	for x, y in part9:
-		# if y>=Y_half_lim:
-		# 	XY_9_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_9_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_9_third.append((x,y))
+		X9.append(x)
+		Y9.append(y)
+		V9, S9 = find_vel_dist(frame_rate, X9, Y9)	
+		mean_V9 = np.mean(V9)
+		sd_V9 = np.std(V9)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY9_centre.append((x, y))
+		else:
+			XY9_boundary.append((x, y))
 	
 	for x, y in part10:
-		# if y>=Y_half_lim:
-		# 	XY_10_half.append((x,y))
-		# if y>=Y_fourth_lim:
-		# 	XY_10_fourth.append((x,y))
 		if y>=Y_third_lim:
 			XY_10_third.append((x,y))
+		X10.append(x)
+		Y10.append(y)
+		V10, S10 = find_vel_dist(frame_rate, X10, Y10)	
+		mean_V10 = np.mean(V10)
+		sd_V10 = np.std(V10)
+		if x>=X0 and x<=Xn and y>=Y0 and y<=Yn:
+			XY10_centre.append((x, y))
+		else:
+			XY10_boundary.append((x, y))
 
-	# time_1_half = (float(time(XY_1_half, frame_rate))/60)*100
-	# time_2_half = (float(time(XY_2_half, frame_rate))/60)*100
-	# time_3_half = (float(time(XY_3_half, frame_rate))/60)*100
-	# time_4_half = (float(time(XY_4_half, frame_rate))/60)*100
-	# time_5_half = (float(time(XY_5_half, frame_rate))/60)*100
-	# time_6_half = (float(time(XY_6_half, frame_rate))/60)*100
-	# time_7_half = (float(time(XY_7_half, frame_rate))/60)*100
-	# time_8_half = (float(time(XY_8_half, frame_rate))/60)*100
-	# time_9_half = (float(time(XY_9_half, frame_rate))/60)*100
-	# time_10_half = (float(time(XY_10_half, frame_rate))/60)*100
-	# time_1_fourth = (float(time(XY_1_fourth, frame_rate))/60)*100
-	# time_2_fourth = (float(time(XY_2_fourth, frame_rate))/60)*100
-	# time_3_fourth = (float(time(XY_3_fourth, frame_rate))/60)*100
-	# time_4_fourth = (float(time(XY_4_fourth, frame_rate))/60)*100
-	# time_5_fourth = (float(time(XY_5_fourth, frame_rate))/60)*100
-	# time_6_fourth = (float(time(XY_6_fourth, frame_rate))/60)*100
-	# time_7_fourth = (float(time(XY_7_fourth, frame_rate))/60)*100
-	# time_8_fourth = (float(time(XY_8_fourth, frame_rate))/60)*100
-	# time_9_fourth = (float(time(XY_9_fourth, frame_rate))/60)*100
-	# time_10_fourth = (float(time(XY_10_fourth, frame_rate))/60)*100
 	time_1_third = (float(time(XY_1_third, frame_rate))/60)*100
 	time_2_third = (float(time(XY_2_third, frame_rate))/60)*100
 	time_3_third = (float(time(XY_3_third, frame_rate))/60)*100
@@ -465,27 +441,178 @@ def time_interval(XY, frame_rate, Y_half_lim, Y_fourth_lim, Y_third_lim, file_na
 	time_9_third = (float(time(XY_9_third, frame_rate))/60)*100
 	time_10_third = (float(time(XY_10_third, frame_rate))/60)*100
 
+#latencies: works
+	latency1_1, latency1_2 = latencies(Y_half_lim, part1, frame_rate)
+	latency2_1, latency2_2 = latencies(Y_half_lim, part2, frame_rate)
+	latency3_1, latency3_2 = latencies(Y_half_lim, part3, frame_rate)
+	latency4_1, latency4_2 = latencies(Y_half_lim, part4, frame_rate)
+	latency5_1, latency5_2 = latencies(Y_half_lim, part5, frame_rate)
+	latency6_1, latency6_2 = latencies(Y_half_lim, part6, frame_rate)
+	latency7_1, latency7_2 = latencies(Y_half_lim, part7, frame_rate)
+	latency8_1, latency8_2 = latencies(Y_half_lim, part8, frame_rate)
+	latency9_1, latency9_2 = latencies(Y_half_lim, part9, frame_rate)
+	latency10_1, latency10_2 = latencies(Y_half_lim, part10, frame_rate)
+
+#transitions: works
+	tran1 = find_transitions(Y1, Y_half_lim)
+	tran2 = find_transitions(Y2, Y_half_lim)
+	tran3 = find_transitions(Y3, Y_half_lim)
+	tran4 = find_transitions(Y4, Y_half_lim)
+	tran5 = find_transitions(Y5, Y_half_lim)
+	tran6 = find_transitions(Y6, Y_half_lim)
+	tran7 = find_transitions(Y7, Y_half_lim)
+	tran8 = find_transitions(Y8, Y_half_lim)
+	tran9 = find_transitions(Y9, Y_half_lim)
+	tran10 = find_transitions(Y10, Y_half_lim)	
+
+#darting: works
+	darts1 = find_darts(V1, mean_V1, sd_V1)
+	darts2 = find_darts(V2, mean_V2, sd_V2)
+	darts3 = find_darts(V3, mean_V3, sd_V3)
+	darts4 = find_darts(V4, mean_V4, sd_V4)
+	darts5 = find_darts(V5, mean_V5, sd_V5)
+	darts6 = find_darts(V6, mean_V6, sd_V6)
+	darts7 = find_darts(V7, mean_V7, sd_V7)
+	darts8 = find_darts(V8, mean_V8, sd_V8)
+	darts9 = find_darts(V9, mean_V9, sd_V9)
+	darts10 = find_darts(V10, mean_V10, sd_V10)
+
+#time centre/wall: works
+	time_centre1 = float(time(XY1_centre, frame_rate))
+	time_boundary1 = float(time(XY1_boundary, frame_rate))
+	time_centre_perc1 = (time_centre1/(time_centre1+time_boundary1))*100
+	time_boundary_perc1 = 100 - time_centre_perc1
+	time_centre2 = float(time(XY2_centre, frame_rate))
+	time_boundary2 = float(time(XY2_boundary, frame_rate))
+	time_centre_perc2 = (time_centre2/(time_centre2+time_boundary2))*100
+	time_boundary_perc2 = 100 - time_centre_perc2
+	time_centre3 = float(time(XY3_centre, frame_rate))
+	time_boundary3 = float(time(XY3_boundary, frame_rate))
+	time_centre_perc3 = (time_centre3/(time_centre3+time_boundary3))*100
+	time_boundary_perc3 = 100 - time_centre_perc3
+	time_centre4 = float(time(XY4_centre, frame_rate))
+	time_boundary4 = float(time(XY4_boundary, frame_rate))
+	time_centre_perc4 = (time_centre4/(time_centre4+time_boundary4))*100
+	time_boundary_perc4 = 100 - time_centre_perc4
+	time_centre5 = float(time(XY5_centre, frame_rate))
+	time_boundary5 = float(time(XY5_boundary, frame_rate))
+	time_centre_perc5 = (time_centre5/(time_centre5+time_boundary5))*100
+	time_boundary_perc5 = 100 - time_centre_perc5
+	time_centre6 = float(time(XY6_centre, frame_rate))
+	time_boundary6 = float(time(XY6_boundary, frame_rate))
+	time_centre_perc6 = (time_centre6/(time_centre6+time_boundary6))*100
+	time_boundary_perc6 = 100 - time_centre_perc6
+	time_centre7 = float(time(XY7_centre, frame_rate))
+	time_boundary7 = float(time(XY7_boundary, frame_rate))
+	time_centre_perc7 = (time_centre7/(time_centre7+time_boundary7))*100
+	time_boundary_perc7 = 100 - time_centre_perc7
+	time_centre8 = float(time(XY8_centre, frame_rate))
+	time_boundary8 = float(time(XY8_boundary, frame_rate))
+	time_centre_perc8 = (time_centre8/(time_centre8+time_boundary8))*100
+	time_boundary_perc8 = 100 - time_centre_perc8
+	time_centre9 = float(time(XY9_centre, frame_rate))
+	time_boundary9 = float(time(XY9_boundary, frame_rate))
+	time_centre_perc9 = (time_centre9/(time_centre9+time_boundary9))*100
+	time_boundary_perc9 = 100 - time_centre_perc9
+	time_centre10 = float(time(XY10_centre, frame_rate))
+	time_boundary10 = float(time(XY10_boundary, frame_rate))
+	time_centre_perc10 = (time_centre10/(time_centre10+time_boundary10))*100
+	time_boundary_perc10 = 100 - time_centre_perc10
+
+
 	times = [file_name, time_1_third, time_2_third, time_3_third, time_4_third, time_5_third, time_6_third, time_7_third, time_8_third, time_9_third, time_10_third, empty]
+	lat1 = [file_name, latency1_1, latency2_1, latency3_1, latency4_1, latency5_1, latency6_1, latency7_1, latency8_1, latency9_1, latency10_1]
+	lat2 = [file_name, latency1_2, latency2_2, latency3_2, latency4_2, latency5_2, latency6_2, latency7_2, latency8_2, latency9_2, latency10_2]
+	tran = [file_name, tran1, tran2, tran3, tran4, tran5, tran6, tran7, tran8, tran9, tran10]
+	dart = [file_name, darts1, darts2, darts3, darts4, darts5, darts6, darts7, darts8, darts9, darts10]
+	time_wall = [file_name, time_boundary_perc1, time_boundary_perc2, time_boundary_perc3, time_boundary_perc4, time_boundary_perc5, time_boundary_perc6, time_boundary_perc7, time_boundary_perc8, time_boundary_perc9, time_boundary_perc10]
+	time_centre = [file_name, time_centre_perc1, time_centre_perc2, time_centre_perc3, time_centre_perc4, time_centre_perc5, time_centre_perc6, time_centre_perc7, time_centre_perc8, time_centre_perc9, time_centre_perc10]
 
 	with open('raw/time_calc.txt', "a") as f:
 		writer = csv.writer(f, delimiter=',')
 		writer.writerow(times)
 
-	data6 = []
+	with open('raw/lat1.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(lat1)
+
+	with open('raw/lat2.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(lat2)
+
+	with open('raw/tran.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(tran)
+
+	with open('raw/dart.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(dart)
+	with open('raw/time_wall.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(time_wall)
+	with open('raw/time_centre.txt', 'a') as f:
+		writer = csv.writer(f, delimiter=',')
+		writer.writerow(time_centre)
+
+	data2 = []
 	with open('raw/time_calc.txt', 'r') as f:
 		for line in f:
+			data2.append([word for word in line.split(",") if word])
+	data3 = []
+	with open('raw/lat1.txt', 'r') as f:
+		for line in f:
+			data3.append([word for word in line.split(",") if word])
+	data4 = []
+	with open('raw/lat2.txt', 'r') as f:
+		for line in f:
+			data4.append([word for word in line.split(",") if word])
+	data5 = []
+	with open('raw/tran.txt', 'r') as f:
+		for line in f:
+			data5.append([word for word in line.split(",") if word])
+	data6 = []
+	with open('raw/dart.txt', 'r') as f:
+		for line in f:
 			data6.append([word for word in line.split(",") if word])
+	data7 = []
+	with open('raw/time_wall.txt', 'r') as f:
+		for line in f:
+			data7.append([word for word in line.split(",") if word])
+	data8 = []
+	with open('raw/time_centre.txt', 'r') as f:
+		for line in f:
+			data8.append([word for word in line.split(",") if word])
 
 # write new sheet in xls:
 	rb = open_workbook("output/Extracted_data_" + name + ".xls")
 	wb = copy(rb)
-	sheet6 = wb.add_sheet("Time in bottom third")
+	sheet2 = wb.add_sheet("Time in bottom third")
+	for row_index in range(len(data2)):
+		for col_index in range(len(data2[row_index])):
+			sheet2.write(row_index, col_index, float_if_possible(data2[row_index][col_index]))
+	sheet3 = wb.add_sheet("Latency for first entry")
+	for row_index in range(len(data3)):
+		for col_index in range(len(data3[row_index])):
+			sheet3.write(row_index, col_index, float_if_possible(data3[row_index][col_index]))
+	sheet4 = wb.add_sheet("Latency for second entry")
+	for row_index in range(len(data4)):
+		for col_index in range(len(data4[row_index])):
+			sheet4.write(row_index, col_index, float_if_possible(data4[row_index][col_index]))
+	sheet5 = wb.add_sheet("Transitions")
+	for row_index in range(len(data5)):
+		for col_index in range(len(data5[row_index])):
+			sheet5.write(row_index, col_index, float_if_possible(data5[row_index][col_index]))
+	sheet6 = wb.add_sheet("Darting")
 	for row_index in range(len(data6)):
 		for col_index in range(len(data6[row_index])):
 			sheet6.write(row_index, col_index, float_if_possible(data6[row_index][col_index]))
-	# sheet3 = wb.add_sheet("Latency for first entry")
-	# wb.get_sheet_by_name("Extracted_data")
-	# for i,row in enumerate(Extracted_data.iter_rows()):
-	# 	for j,col in enumerate(row):
- #  			sheet3.cell(row=0,column=0).value = col.value
+	sheet7 = wb.add_sheet("%time in boundary")
+	for row_index in range(len(data7)):
+		for col_index in range(len(data7[row_index])):
+			sheet7.write(row_index, col_index, float_if_possible(data7[row_index][col_index]))
+	sheet8 = wb.add_sheet("%time in centre")
+	for row_index in range(len(data8)):
+		for col_index in range(len(data8[row_index])):
+			sheet8.write(row_index, col_index, float_if_possible(data8[row_index][col_index]))
+
 	wb.save("output/Extracted_data_" + name + ".xls")
